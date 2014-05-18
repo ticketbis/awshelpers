@@ -71,7 +71,7 @@ def create_zone(domain, domain_type):
                     alias_evaluate_target_health=False)
             elif len(record_a) == 1:
                 change = changes.add_change("CREATE", name_sub, "A")
-                change.add_value(record_a)
+                change.add_value(record_a[0])
 
         ## Adding CNAME records
         for key_record in domain_settings["records_cname"].iterkeys():
