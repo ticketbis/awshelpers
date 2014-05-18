@@ -4,16 +4,31 @@
 import pprint
 from lib import awsroute53helper
 import argparse
-import settings
 
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
     parser.usage = 'bin/awshelpers'
-    parser.add_argument("-l", "--list-zones", help="List hosted zones", action="store_true")
-    parser.add_argument("-zid", "--zone-id", help="Get zone id", metavar="domain-name", type=str)
-    parser.add_argument("-cz", "--create-zone", help="Create zone", metavar=("domain-name", "domain-type"), type=str, nargs=2)
-    parser.add_argument("-rz", "--remove-zone", help="Remove zone", metavar="domain-name", type=str)
+    parser.add_argument("-l",
+        "--list-zones",
+        help="List hosted zones",
+        action="store_true")
+    parser.add_argument("-zid",
+        "--zone-id",
+        help="Get zone id",
+        metavar="domain-name",
+        type=str)
+    parser.add_argument("-cz",
+        "--create-zone",
+        help="Create zone",
+        metavar=("domain-name", "domain-type"),
+        type=str,
+        nargs=2)
+    parser.add_argument("-rz",
+        "--remove-zone",
+        help="Remove zone",
+        metavar="domain-name",
+        type=str)
     args = parser.parse_args()
 
     __prettyprinter__ = pprint.PrettyPrinter(indent=4)
@@ -33,6 +48,6 @@ if __name__ == '__main__':
 
     # Delete zone
     if args.remove_zone:
-        confirm = raw_input('Delete %s Are you sure? (y/n)' % (args.remove_zone))
-        if confirm == 'y':
+        answer = raw_input('Delete %s are you sure? (y/n)' % (args.remove_zone))
+        if answer == 'y':
             awsroute53helper.delete_zone(args.remove_zone)
