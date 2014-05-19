@@ -42,7 +42,7 @@ if __name__ == '__main__':
     elif args.create_zone: # Create zone
         awsroute53helper.create_zone(args.create_zone[0], args.create_zone[1])
     elif args.remove_zone: # Delete zone
-        answer = raw_input('Delete %s are you sure? (y/n)' % (args.remove_zone))
+        answer = raw_input('Delete %s are you sure? (y/N)' % (args.remove_zone))
         if answer == 'y':
             awsroute53helper.delete_zone(args.remove_zone)
     else:
