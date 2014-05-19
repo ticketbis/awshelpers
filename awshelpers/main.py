@@ -35,19 +35,21 @@ if __name__ == '__main__':
         type=str)
     args = parser.parse_args()
 
-    if args.list_zones: # List zones
-        __prettyprinter__.pprint(awsroute53helper.get_hosted_zones())
-    elif args.zone_id: # Get zone id
-        __prettyprinter__.pprint(\
-    	   awsroute53helper.get_hosted_zone_id(args.zone_id))
-    elif args.create_zone: # Create zone
-        awsroute53helper.create_zone(args.create_zone[0], args.create_zone[1])
-    elif args.remove_zone: # Delete zone
-        answer = raw_input('Delete %s are you sure? (y/N)' % (args.remove_zone))
-        if answer == 'y':
-            awsroute53helper.delete_zone(args.remove_zone)
-    else:
-        parser.print_help()
+    try:
+        if args.list_zones: # List zones
+            __prettyprinter__.pprint(awsroute53helper.get_hosted_zones())
+        elif args.zone_id: # Get zone id
+            __prettyprinter__.pprint(awsroute53helper.get_hosted_zone_id(args.zone_id))
+        elif args.create_zone: # Create zone
+            awsroute53helper.create_zone(args.create_zone[0], args.create_zone[1])
+        elif args.remove_zone: # Delete zone
+            answer = raw_input('Delete %s are you sure? (y/N) ' % (args.remove_zone))
+            if answer == 'y':
+                awsroute53helper.delete_zone(args.remove_zone)
+        else:
+            parser.print_help()
+    except ValueError, value_error:
+        print value_error
 
 
 
