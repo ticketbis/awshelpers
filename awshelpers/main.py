@@ -23,7 +23,8 @@ if __name__ == '__main__':
         type=str)
     parser.add_argument("-cz",
         "--create-zone",
-        help="Create zone",
+        help="Create zone with the given domain-name and \
+            the values specified in settings file under the domain-type block",
         metavar=("domain-name", "domain-type"),
         type=str,
         nargs=2)

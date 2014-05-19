@@ -21,12 +21,10 @@ def get_hosted_zone_id(domain):
     """Get the zone id of a provided domain"""
     conn = _get_connection()
     zone = conn.get_zone(domain)
-    try:
-        # TODO raise error o chequeo if None y devuelvo... que?
+    if zone:
         return zone.id
-    except AttributeError, error:
-        print "Warning: The domain %s doesn't exists" % (domain)
-        raise error
+    else:
+        raise ValueError("The domain %s doesn't exists" % (domain))
 
 def create_zone(domain, domain_type):
     """
@@ -40,15 +38,11 @@ def create_zone(domain, domain_type):
 
     # Check if the hosted zone exists. If it exists, exit
     if conn.get_zone(domain):
-        # TODO que retorno en un metodo? print del error devolver ...
-        # None (convencion, tratar en salida o raise error?)
-        print "The domain %s already exists!" % (domain)
-        return
+        raise ValueError("The domain %s already exists!" % (domain))
     else:
         zone = conn.create_zone(domain)
 
     try:
-        #TODO coger dinamicamente el parametro para meter en Options
         domain_settings = getattr(settings, domain_type)
         changes = ResourceRecordSets(conn, zone.id)
 
@@ -115,5 +109,4 @@ def delete_zone(domain):
         zone.delete()
         print "%s zone. ID: %s DELETED" % (zone.name, zone.id)
     else:        
-        print "The domain %s does not exists!" % (domain)
-        return
+        raise ValueError("The domain %s does not exists!" % (domain))
