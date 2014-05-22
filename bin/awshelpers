@@ -1,4 +1,7 @@
-#!/bin/bash
+#!python
 
-BINPATH=`dirname $0`
-python "$BINPATH/../awshelpers/main.py" $@
+import sys
+from awshelpers import main
+
+if __name__ == '__main__':
+	main.main(sys.argv)
