@@ -5,7 +5,9 @@ import pprint
 from lib import awsroute53helper
 import argparse
 
-def main(params):
+# def main(params):
+if __name__ == '__main__':
+
     __prettyprinter__ = pprint.PrettyPrinter(indent=4)
 
 
@@ -32,7 +34,7 @@ def main(params):
         help="Remove zone",
         metavar="domain-name",
         type=str)
-    args = parser.parse_args(params)
+    args = parser.parse_args()
 
     try:
         if args.list_zones: # List zones
