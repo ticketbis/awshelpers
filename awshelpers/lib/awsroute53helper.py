@@ -110,3 +110,70 @@ def delete_zone(domain):
         print "%s zone. ID: %s DELETED" % (zone.name, zone.id)
     else:        
         raise ValueError("The domain %s does not exists!" % (domain))
+
+def add_subdomain_A_all(subdomain, hosted_zone_id, dns_name):
+    hosted_zones = get_hosted_zones()
+    for zone in hosted_zones:
+        add_subdomain_A(zone.name,subdomain,hosted_zone_id,dns_name)
+
+def remove_subdomain_A_all(subdomain, hosted_zone_id, dns_name):
+    hosted_zones = get_hosted_zones()
+    for zone in hosted_zones:
+        remove_subdomain_A(zone.name,subdomain,hosted_zone_id,dns_name)
+
+def add_subdomain_A(domain, subdomain, hosted_zone_id, dns_name):
+    """
+        Add subdomain from a domain
+    """
+    conn = _get_connection()
+
+    zone = conn.get_zone(domain)
+    if zone:
+        record_set = zone.get_a(subdomain + "." + domain)
+        if record_set:
+            raise ValueError("The subdomain %s exists in the %s domain!" % (subdomain, domain))
+        else:
+            record_sets = zone.get_records()
+            change = record_sets.add_change(
+                    action="CREATE",
+                    name=subdomain + "." + domain,
+                    type="A",
+                    alias_hosted_zone_id=hosted_zone_id,
+                    alias_dns_name=dns_name,
+                    alias_evaluate_target_health=False)
+
+            result = record_sets.commit()
+            print "Subdomain %s created at domain %s" % (subdomain, domain)
+            print result
+    else:
+        raise ValueError("The domain %s does not exists!" % (domain))
+
+def remove_subdomain_A(domain, subdomain, hosted_zone_id, dns_name):
+    """
+        Remove subdomain from a domain
+    """
+    conn = _get_connection()
+
+    zone = conn.get_zone(domain)
+    if zone:
+        record_set = zone.get_a(subdomain + "." + domain)
+        if record_set:
+            # zone.delete_a(domain)
+            record_sets = zone.get_records()
+            change = record_sets.add_change(
+                    action="DELETE",
+                    name=subdomain + "." + domain,
+                    type="A",
+                    alias_hosted_zone_id=hosted_zone_id,
+                    alias_dns_name=dns_name,
+                    alias_evaluate_target_health=False)
+
+            result = record_sets.commit()
+            print "Subdomain %s removed from domain %s" % (subdomain, domain)
+            # print result
+        else:
+            raise ValueError("The subdomain %s does not exist in the %s domain!" % (subdomain, domain))            
+    else:
+        raise ValueError("The domain %s does not exists!" % (domain))
+
+
