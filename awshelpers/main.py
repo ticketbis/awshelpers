@@ -35,25 +35,25 @@ if __name__ == '__main__':
         metavar="domain-name",
         type=str)
     parser.add_argument("-as",
-        "--add-subdomain-a",
+        "--add-record-a",
         help="Add subdomain A to a specific domain",
         metavar=("domain-name", "subdomain-name", "hosted_zone_id", "dns_name"),
         type=str,
         nargs=4)
     parser.add_argument("-rs",
-        "--remove-subdomain-a",
+        "--remove-record-a",
         help="Remove subdomain A from a specific domain",
         metavar=("domain-name", "subdomain-name", "hosted_zone_id", "dns_name"),
         type=str,
         nargs=4)
     parser.add_argument("-asall",
-        "--add-subdomain-a-all",
+        "--add-record-a-all",
         help="Add subdomain A to all domains",
         metavar=("subdomain-name", "hosted_zone_id", "dns_name"),
         type=str,
         nargs=3)
     parser.add_argument("-rsall",
-        "--remove-subdomain-a-all",
+        "--remove-record-a-all",
         help="Remove subdomain A from all domains",
         metavar=("subdomain-name", "hosted_zone_id", "dns_name"),
         type=str,
@@ -72,24 +72,24 @@ if __name__ == '__main__':
             answer = raw_input('Delete %s are you sure? (y/N) ' % (args.remove_zone))
             if answer == 'y':
                 awsroute53helper.delete_zone(args.remove_zone)
-        elif args.add_subdomain_a: # Add subdomain
-            awsroute53helper.add_subdomain_A(args.add_subdomain_a[0], 
-                args.add_subdomain_a[1],
-                args.add_subdomain_a[2],
-                args.add_subdomain_a[3])
-        elif args.remove_subdomain_a: # Remove subdomain
-            awsroute53helper.remove_subdomain_A(args.remove_subdomain_a[0], 
-                args.remove_subdomain_a[1],
-                args.remove_subdomain_a[2],
-                args.remove_subdomain_a[3])
-        elif args.add_subdomain_a_all: # Add subdomain
-            awsroute53helper.add_subdomain_A_all(args.add_subdomain_a_all[0], 
-                args.add_subdomain_a_all[1],
-                args.add_subdomain_a_all[2])
-        elif args.remove_subdomain_a_all: # Remove subdomain
-            awsroute53helper.remove_subdomain_A_all(args.remove_subdomain_a_all[0], 
-                args.remove_subdomain_a_all[1],
-                args.remove_subdomain_a_all[2])
+        elif args.add_record_a: # Add subdomain
+            awsroute53helper.add_record_a(args.add_record_a[0], 
+                args.add_record_a[1],
+                args.add_record_a[2],
+                args.add_record_a[3])
+        elif args.remove_record_a: # Remove subdomain
+            awsroute53helper.remove_record_a(args.remove_record_a[0], 
+                args.remove_record_a[1],
+                args.remove_record_a[2],
+                args.remove_record_a[3])
+        elif args.add_record_a_all: # Add subdomain
+            awsroute53helper.add_record_a_all(args.add_record_a_all[0], 
+                args.add_record_a_all[1],
+                args.add_record_a_all[2])
+        elif args.remove_record_a_all: # Remove subdomain
+            awsroute53helper.remove_record_a_all(args.remove_record_a_all[0], 
+                args.remove_record_a_all[1],
+                args.remove_record_a_all[2])
         else:
             parser.print_help()
     except ValueError, value_error:
