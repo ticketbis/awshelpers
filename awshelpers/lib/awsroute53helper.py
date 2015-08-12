@@ -4,7 +4,7 @@
 import boto.route53
 from boto.route53.record import (ResourceRecordSets)
 import yaml
-import logging 
+import logging
 
 RED = "\033[0;31m"
 GREEN = "\033[0;32m"
@@ -42,45 +42,43 @@ def get_hosted_zone_id(domain):
 
 def check_settings_file(settings_file):
     """
-        Check the settings file 
+        Check the settings file
     """
     with open(settings_file, 'r') as ymlfile:
         cfg = yaml.load(ymlfile)
 
     try:
         for section in cfg:
-            logging.info("%s============== SECTION %s ==============%s" % (BBLUE, section, COLOR_OFF))
-                          
+            logging.info("%s======== SECTION %s ========%s", BBLUE, section, COLOR_OFF)
             records_a = cfg[section]['records_a']
             for key_record in records_a.iterkeys():
-                logging.info("%s====== RECORD A ======%s" % (CYAN, COLOR_OFF))
-                logging.info("%skey:%s %s" % (YELLOW, COLOR_OFF, key_record))
+                logging.info("%s====== RECORD A ======%s", CYAN, COLOR_OFF)
+                logging.info("%skey:%s %s", YELLOW, COLOR_OFF, key_record)
                 record_a = records_a[key_record]
                 for element in record_a:
-                    logging.info("%svalue:%s %s" % (YELLOW, COLOR_OFF, element))
+                    logging.info("%svalue:%s %s", YELLOW, COLOR_OFF, element)
                 if len(record_a) > 2:
-                    logging.Warning("Warning: Up to two parameters will be used. \
-The following parameters will be ignored.")
+                    logging.warning("%sWarning: Up to two parameters will be used. \
+The following parameters will be ignored.%s", RED, COLOR_OFF)
 
             records_cname = cfg[section]['records_cname']
             for key_record in records_cname.iterkeys():
-                logging.info("%s====== RECORD CNAME ======%s" % (BLUE, COLOR_OFF))
-                logging.info("%skey:%s %s" % (YELLOW, COLOR_OFF, key_record))
+                logging.info("%s====== RECORD CNAME ======%s", BLUE, COLOR_OFF)
+                logging.info("%skey:%s %s", YELLOW, COLOR_OFF, key_record)
                 record_cname = records_cname[key_record]
-                logging.info("%svalue:%s %s" % (YELLOW, COLOR_OFF, record_cname))
+                logging.info("%svalue:%s %s", YELLOW, COLOR_OFF, record_cname)
 
             records_mx = cfg[section]['records_mx']
             for key_record in records_mx.iterkeys():
-                logging.info("%s====== RECORD MX ======%s" % (PURPLE, COLOR_OFF))
-                logging.info("%skey:%s %s" % (YELLOW, COLOR_OFF, key_record))
-                record_mx = records_mx[key_record]
+                logging.info("%s====== RECORD MX ======%s", PURPLE, COLOR_OFF)
+                logging.info("%skey:%s %s", YELLOW, COLOR_OFF, key_record)
                 for key in records_mx:
                     for value_mx in records_mx[key]:
-                        logging.info("%svalue:%s %s" % (YELLOW, COLOR_OFF, value_mx))
-        logging.info("%s:::::::::::: Config file check success!%s" % (GREEN, COLOR_OFF))
+                        logging.info("%svalue:%s %s", YELLOW, COLOR_OFF, value_mx)
+        logging.info("%s:::::::::::: Config file check success!%s", GREEN, COLOR_OFF)
     except Exception, exception:
-        logging.error("%s:::::::::::: Config file check failed!%s" % (RED, COLOR_OFF))
-        logging.error("%s %s %s" % (RED, exception, COLOR_OFF))
+        logging.error("%s:::::::::::: Config file check failed!%s", RED, COLOR_OFF)
+        logging.error("%s %s %s", RED, exception, COLOR_OFF)
 
 def create_zone(domain, domain_type):
     """
@@ -89,7 +87,7 @@ def create_zone(domain, domain_type):
         - domain - the domain to create
         - domain_type - Type specified in the settings.py
     """
-    logging.info("Creating domain: %s ...." % (domain))
+    logging.info("Creating domain: %s ....", domain)
     conn = _get_connection()
 
     # Check if the hosted zone exists. If it exists, exit
@@ -110,7 +108,7 @@ def create_zone(domain, domain_type):
             else:
                 name_sub = key_record + "." + domain
             record_a = domain_settings["records_a"][key_record]
-            logging.info("Creating A record %s values %s" % (name_sub, record_a))
+            logging.info("Creating A record %s values %s", name_sub, record_a)
             if len(record_a) > 1:
                 change = changes.add_change(
                     action="CREATE",
@@ -129,13 +127,13 @@ def create_zone(domain, domain_type):
             if value_cname == "@":
                 value_cname = domain
             name_sub = key_record + "." + domain
-            logging.info("Creating CNAME record %s values %s" % (name_sub, value_cname))
+            logging.info("Creating CNAME record %s values %s", name_sub, value_cname)
             change = changes.add_change("CREATE", name_sub, "CNAME")
             change.add_value(value_cname)
 
         ## Adding MX records
         for key_record in domain_settings["records_mx"].iterkeys():
-            logging.info("Creating MX record %s values:" % (domain))
+            logging.info("Creating MX record %s values:", domain)
             change = changes.add_change("CREATE", domain, "MX")
             for value_mx in domain_settings["records_mx"][key_record]:
                 logging.info(value_mx)
@@ -143,7 +141,7 @@ def create_zone(domain, domain_type):
 
         result = changes.commit()
         logging.info(result)
-        logging.info("Zone %s created" % (domain))
+        logging.info("Zone %s created", domain)
     except Exception, exception:
         logging.error(exception)
         delete_zone(domain)
@@ -157,13 +155,13 @@ def delete_zone(domain):
     # Check if the hosted zone exists. If not exit
     zone = conn.get_zone(domain)
     if zone:
-        logging.info("Deleting %s zone. ID: %s ..." % (zone.name, zone.id))
+        logging.info("Deleting %s zone. ID: %s ...", zone.name, zone.id)
         for record_set in zone.get_records():
             # Dejamos los records NS y SOA que son obligatorios en una zona
             if record_set.type != "NS" and record_set.type != "SOA":
                 zone.delete_record(record_set)
         zone.delete()
-        logging.info("%s zone. ID: %s DELETED" % (zone.name, zone.id))
+        logging.info("%s zone. ID: %s DELETED", zone.name, zone.id)
     else:
         raise ValueError("The domain %s does not exists!" % (domain))
 
@@ -205,7 +203,7 @@ def add_record_a(domain, subdomain, hosted_zone_id, dns_name):
                 alias_evaluate_target_health=False)
 
             record_sets.commit()
-            logging.info("Subdomain %s created at domain %s" % (subdomain, domain))
+            logging.info("Subdomain %s created at domain %s", subdomain, domain)
     else:
         raise ValueError("The domain %s does not exists!" % (domain))
 
@@ -230,7 +228,7 @@ def remove_record_a(domain, subdomain, hosted_zone_id, dns_name):
                 alias_evaluate_target_health=False)
 
             record_sets.commit()
-            logging.info("Subdomain %s removed from domain %s" % (subdomain, domain))
+            logging.info("Subdomain %s removed from domain %s", subdomain, domain)
         else:
             raise ValueError("The subdomain %s does not exist in the %s domain!" % (subdomain, domain))
     else:
