@@ -3,7 +3,7 @@
 """
 import boto.route53
 from boto.route53.record import (ResourceRecordSets)
-import settings
+import yaml
 
 def _get_connection():
     """Returns a route53 connection"""
@@ -25,6 +25,49 @@ def get_hosted_zone_id(domain):
         return zone.id
     else:
         raise ValueError("The domain %s doesn't exists" % (domain))
+
+def check_settings_file(settings_file):
+    """
+        Check the settings file 
+    """
+    with open(settings_file, 'r') as ymlfile:
+        cfg = yaml.load(ymlfile)
+
+    try:
+        for section in cfg:
+            print "============== SECTION %s ==============" % (section)
+
+            records_a = cfg[section]['records_a']
+            for key_record in records_a.iterkeys():
+                print "====== RECORD A ======"
+                print key_record
+                record_a = records_a[key_record]
+                for element in record_a:
+                    print element
+                if len(record_a) > 2:
+                    print "Warning: Up to two parameters will be used. \
+The following parameters will be ignored."
+
+            records_cname = cfg[section]['records_cname']
+            for key_record in records_cname.iterkeys():
+                print "====== RECORD CNAME ======"
+                print key_record
+                record_cname = records_cname[key_record]
+                print "%s" % (record_cname)
+
+            records_mx = cfg[section]['records_mx']
+            print records_mx
+            for key_record in records_mx.iterkeys():
+                print "====== RECORD MX ======"
+                print key_record
+                record_mx = records_mx[key_record]
+                for key in records_mx:
+                    for value_mx in records_mx[key]:
+                        print value_mx
+        print ":::::::::::: Config file check success!"
+    except Exception, exception:
+        print ":::::::::::: Config file check failed!"
+        print exception
 
 def create_zone(domain, domain_type):
     """

@@ -50,6 +50,11 @@ if __name__ == '__main__':
         metavar=("subdomain-name", "hosted_zone_id", "dns_name"),
         type=str,
         nargs=3)
+    parser.add_argument("--check-settings-file",
+        help="Check the settings file",
+        metavar=("settings file"),
+        type=str,
+        nargs=1)
 
     args = parser.parse_args()
 
@@ -82,6 +87,8 @@ if __name__ == '__main__':
             awsroute53helper.remove_record_a_all(args.remove_record_a_all[0], 
                 args.remove_record_a_all[1],
                 args.remove_record_a_all[2])
+        elif args.check_settings_file:
+            awsroute53helper.check_settings_file(args.check_settings_file[0])
         else:
             parser.print_help()
     except ValueError, value_error:
