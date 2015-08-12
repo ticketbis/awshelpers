@@ -13,47 +13,39 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description="AWS Helpers")
     parser.usage = 'bin/awshelpers'
-    parser.add_argument("-l",
-        "--list-zones",
+    parser.add_argument("--list-zones",
         help="List hosted zones",
         action="store_true")
-    parser.add_argument("-zid",
-        "--zone-id",
+    parser.add_argument("--zone-id",
         help="Get zone id",
         metavar="domain-name",
         type=str)
-    parser.add_argument("-cz",
-        "--create-zone",
+    parser.add_argument("--create-zone",
         help="Create zone with the given domain-name and \
             the values specified in settings file under the domain-type block",
         metavar=("domain-name", "domain-type"),
         type=str,
         nargs=2)
-    parser.add_argument("-rz",
-        "--remove-zone",
+    parser.add_argument("--remove-zone",
         help="Remove zone",
         metavar="domain-name",
         type=str)
-    parser.add_argument("-as",
-        "--add-record-a",
+    parser.add_argument("--add-record-a",
         help="Add subdomain A to a specific domain",
         metavar=("domain-name", "subdomain-name", "hosted_zone_id", "dns_name"),
         type=str,
         nargs=4)
-    parser.add_argument("-rs",
-        "--remove-record-a",
+    parser.add_argument("--remove-record-a",
         help="Remove subdomain A from a specific domain",
         metavar=("domain-name", "subdomain-name", "hosted_zone_id", "dns_name"),
         type=str,
         nargs=4)
-    parser.add_argument("-asall",
-        "--add-record-a-all",
+    parser.add_argument("--add-record-a-all",
         help="Add subdomain A to all domains",
         metavar=("subdomain-name", "hosted_zone_id", "dns_name"),
         type=str,
         nargs=3)
-    parser.add_argument("-rsall",
-        "--remove-record-a-all",
+    parser.add_argument("--remove-record-a-all",
         help="Remove subdomain A from all domains",
         metavar=("subdomain-name", "hosted_zone_id", "dns_name"),
         type=str,
