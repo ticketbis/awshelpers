@@ -72,21 +72,26 @@ The following parameters will be ignored.%s", RED, COLOR_OFF)
             for key_record in records_mx.iterkeys():
                 logging.info("%s====== RECORD MX ======%s", PURPLE, COLOR_OFF)
                 logging.info("%skey:%s %s", YELLOW, COLOR_OFF, key_record)
-                for key in records_mx:
-                    for value_mx in records_mx[key]:
-                        logging.info("%svalue:%s %s", YELLOW, COLOR_OFF, value_mx)
+                for element in records_mx[key_record]:
+                    logging.info("%svalue:%s %s", YELLOW, COLOR_OFF, element)
         logging.info("%s:::::::::::: Config file check success!%s", GREEN, COLOR_OFF)
     except Exception, exception:
         logging.error("%s:::::::::::: Config file check failed!%s", RED, COLOR_OFF)
         logging.error("%s %s %s", RED, exception, COLOR_OFF)
 
-def create_zone(domain, domain_type):
+def create_zone(domain, domain_type, settings_file):
     """
         Create a hosted zone.
         Parameters:
         - domain - the domain to create
         - domain_type - Type specified in the settings.py
+        - settings_file - File with the values to create
     """
+    check_settings_file(settings_file)
+
+    with open(settings_file, 'r') as ymlfile:
+        cfg = yaml.load(ymlfile)
+
     logging.info("Creating domain: %s ....", domain)
     conn = _get_connection()
 
@@ -97,17 +102,19 @@ def create_zone(domain, domain_type):
         zone = conn.create_zone(domain)
 
     try:
-        domain_settings = getattr(settings, domain_type)
+        # domain_settings = getattr(settings, domain_type)
         changes = ResourceRecordSets(conn, zone.id)
 
         ## Adding A records
-        for key_record in domain_settings["records_a"].iterkeys():
+        records_a = cfg[domain_type]['records_a']
+        for key_record in records_a.iterkeys():
             # TODO revisar comportamiento de @ . Actualizar los docs de settings
             if key_record == "@":
                 name_sub = domain
             else:
                 name_sub = key_record + "." + domain
-            record_a = domain_settings["records_a"][key_record]
+            # record_a = domain_settings["records_a"][key_record]
+            record_a = records_a[key_record]
             logging.info("Creating A record %s values %s", name_sub, record_a)
             if len(record_a) > 1:
                 change = changes.add_change(
@@ -122,8 +129,10 @@ def create_zone(domain, domain_type):
                 change.add_value(record_a[0])
 
         ## Adding CNAME records
-        for key_record in domain_settings["records_cname"].iterkeys():
-            value_cname = domain_settings["records_cname"][key_record]
+        records_cname = cfg[domain_type]['records_cname']
+        for key_record in records_cname.iterkeys():
+            # value_cname = domain_settings["records_cname"][key_record]
+            value_cname = records_cname[key_record]
             if value_cname == "@":
                 value_cname = domain
             name_sub = key_record + "." + domain
@@ -132,10 +141,11 @@ def create_zone(domain, domain_type):
             change.add_value(value_cname)
 
         ## Adding MX records
-        for key_record in domain_settings["records_mx"].iterkeys():
+        records_mx = cfg[domain_type]['records_mx']
+        for key_record in records_mx.iterkeys():
             logging.info("Creating MX record %s values:", domain)
             change = changes.add_change("CREATE", domain, "MX")
-            for value_mx in domain_settings["records_mx"][key_record]:
+            for value_mx in records_mx[key_record]:
                 logging.info(value_mx)
                 change.add_value(value_mx)
 

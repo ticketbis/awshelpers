@@ -23,9 +23,9 @@ if __name__ == '__main__':
     PARSER.add_argument("--create-zone",
         help="Create zone with the given domain-name and \
             the values specified in settings file under the domain-type block",
-        metavar=("domain-name", "domain-type"),
+        metavar=("domain-name", "domain-type", "settings-file"),
         type=str,
-        nargs=2)
+        nargs=3)
     PARSER.add_argument("--remove-zone",
         help="Remove zone",
         metavar="domain-name",
@@ -64,7 +64,9 @@ if __name__ == '__main__':
         elif ARGS.zone_id: # Get zone id
             __prettyprinter__.pprint(awsroute53helper.get_hosted_zone_id(ARGS.zone_id))
         elif ARGS.create_zone: # Create zone
-            awsroute53helper.create_zone(ARGS.create_zone[0], ARGS.create_zone[1])
+            awsroute53helper.create_zone(ARGS.create_zone[0], 
+                ARGS.create_zone[1], 
+                ARGS.create_zone[2])
         elif ARGS.remove_zone: # Delete zone
             ANSWER = raw_input('Delete %s are you sure? (y/N) ' % (ARGS.remove_zone))
             if ANSWER == 'y':
