@@ -2,7 +2,7 @@
 	Main
 """
 import pprint
-from lib import awsroute53helper
+from awshelpers import awsroute53helper
 import argparse
 
 # def main(params):
@@ -64,8 +64,8 @@ if __name__ == '__main__':
         elif ARGS.zone_id: # Get zone id
             __prettyprinter__.pprint(awsroute53helper.get_hosted_zone_id(ARGS.zone_id))
         elif ARGS.create_zone: # Create zone
-            awsroute53helper.create_zone(ARGS.create_zone[0], 
-                ARGS.create_zone[1], 
+            awsroute53helper.create_zone(ARGS.create_zone[0],
+                ARGS.create_zone[1],
                 ARGS.create_zone[2])
         elif ARGS.remove_zone: # Delete zone
             ANSWER = raw_input('Delete %s are you sure? (y/N) ' % (ARGS.remove_zone))
