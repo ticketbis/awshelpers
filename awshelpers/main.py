@@ -96,8 +96,5 @@ def main():
     except ValueError, value_error:
         print value_error
 
-
-
-# def main(params):
 if __name__ == '__main__':
     main()
