@@ -2,17 +2,17 @@
 	Main
 """
 import pprint
-from helpers import awsroute53helper
+from awshelpers import awsroute53helper
 import argparse
 
-# def main(params):
-if __name__ == '__main__':
+
+def main():
 
     __prettyprinter__ = pprint.PrettyPrinter(indent=4)
 
 
     PARSER = argparse.ArgumentParser(description="AWS Helpers")
-    PARSER.usage = 'bin/awshelpers'
+    PARSER.usage = 'awshelpers [option]'
     PARSER.add_argument("--list-zones",
         help="List hosted zones",
         action="store_true")
@@ -98,3 +98,6 @@ if __name__ == '__main__':
 
 
 
+# def main(params):
+if __name__ == '__main__':
+    main()

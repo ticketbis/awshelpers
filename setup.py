@@ -13,7 +13,9 @@ setup(name='awshelpers',
     author_email='eloygbm@gmail.com',
     platforms='any',
     license="Apache v2",
-    scripts=['awshelpers.py'],
+    entry_points={
+        'console_scripts': ['awshelpers=awshelpers.main:main'],
+    },
     install_requires=REQUIREMENTS_FILE.readlines(),
     packages=find_packages(),
     zip_safe=False
